@@ -291,7 +291,7 @@ export default function App(){
         onShare={onShare}
         onDownload={onDownload}
         bgType="gif"                 // "video" or "gif"
-        bgSrc="/headers/mog.gif"  // or "/headers/mog-bg.gif"
+        bgSrc="/mog.gif"  // or "/headers/mog-bg.gif"
       />
 
       <div className="max-w-7xl mx-auto p-4 md:p-8">
