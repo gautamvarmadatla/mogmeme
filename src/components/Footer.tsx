@@ -16,7 +16,7 @@ export default function Footer() {
           <div className="md:col-span-2">
             <div className="flex items-center gap-4 rounded border border-neutral-700 bg-neutral-900/60">
               <div className="h-14 w-14 shrink-0 rounded-l overflow-hidden bg-gradient-to-br from-red-600 to-blue-600">
-                <img src="/logo-mog.jpg" alt="Avatar" className="h-full w-full object-contain p-1.5"/>
+                <img src="/mog-logo.jpg" alt="Avatar" className="h-full w-full object-contain p-1.5"/>
               </div>
               <div className="flex-1 py-3 pr-3">
                 <div className="flex items-center justify-between gap-2">
