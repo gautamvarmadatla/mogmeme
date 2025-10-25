@@ -2,11 +2,10 @@ import React from "react";
 type SocialLink = { href: string; label: string; icon: React.ReactNode };
 export default function Footer() {
   const socials: SocialLink[] = [
-    { href: "https://example.com", label: "Website", icon: <GlobeIcon /> },
+    { href: "https://motherofgod.fun/", label: "Website", icon: <GlobeIcon /> },
     { href: "https://discord.com", label: "Discord", icon: <DiscordIcon /> },
-    { href: "https://x.com", label: "X", icon: <XIcon /> },
-    { href: "https://t.me", label: "Telegram", icon: <TelegramIcon /> },
-    { href: "https://youtube.com", label: "YouTube", icon: <YouTubeIcon /> },
+    { href: "https://x.com/motherofGodSol", label: "X", icon: <XIcon /> },
+    { href: "https://t.me/+z88-ob8hT-FjMzgx", label: "Telegram", icon: <TelegramIcon /> },
   ];
   return (
     <footer className="bg-neutral-950 text-neutral-200 border-t border-neutral-800 mt-16">
