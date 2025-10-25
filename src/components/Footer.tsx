@@ -26,7 +26,7 @@ export default function Footer() {
             </div>
             <div className="px-3">
               <div className="font-semibold text-sm md:text-base tracking-wide whitespace-nowrap">
-                [MOG]Mother of God
+                 Mother of God 
               </div>
             </div>
           </div>
