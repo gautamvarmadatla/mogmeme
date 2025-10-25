@@ -157,11 +157,7 @@ export default function App(){
   const bgImg = useImage(activeBgURL);
   const faceImg = useImage(`data:image/svg+xml;charset=utf-8,${MOG_FACE_SVG}`);
 
-  const [layers,setLayers]=useState<Layer[]>([
-    { id: uid("text"), type:"text", name:"Top text", x:0.5, y:0.07, scale:1, opacity:1, text:"MOTHER OF GOD ($MOG)", fontSize:88, strokePx:12, letterSpacing:0, allCaps:true, rotation:0, visible:true },
-    { id: uid("text"), type:"text", name:"Bottom text", x:0.5, y:0.93, scale:1, opacity:1, text:"...", fontSize:88, strokePx:12, letterSpacing:0, allCaps:true, rotation:0, visible:true },
-    { id: uid("face"), type:"face", name:"Face", x:0.5, y:0.5, scale:0.8, opacity:1, rotation:0, visible:true },
-  ]);
+  const [layers,setLayers]=useState<Layer[]>([]);
   const [selectedId,setSelectedId]=useState<string|null>(null);
   const selected = useMemo(()=>layers.find(l=>l.id===selectedId)||null,[layers,selectedId]);
 
