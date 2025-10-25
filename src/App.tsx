@@ -151,7 +151,7 @@ export default function App(){
   const [width,setWidth]=useState(1024); const [height,setHeight]=useState(1024);
   const minDim = Math.min(width,height);
   const [template,setTemplate]=useState<"classic"|"dark"|"blank">("blank");
-  const [bgTemplateURL,setBgTemplateURL]=useState<string|undefined>(undefined);
+  const [bgTemplateURL,setBgTemplateURL]=useState<string|undefined>("/templates/mogtemplate2.png");
   const [bgUploadURL,setBgUploadURL]=useState<string|undefined>(undefined);
   const activeBgURL = bgUploadURL || bgTemplateURL;
   const bgImg = useImage(activeBgURL);
