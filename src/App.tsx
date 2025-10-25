@@ -150,7 +150,7 @@ export default function App(){
   const canvasRef = useRef<HTMLCanvasElement|null>(null);
   const [width,setWidth]=useState(1024); const [height,setHeight]=useState(1024);
   const minDim = Math.min(width,height);
-  const [template,setTemplate]=useState<"classic"|"dark"|"blank">("classic");
+  const [template,setTemplate]=useState<"classic"|"dark"|"blank">("blank");
   const [bgTemplateURL,setBgTemplateURL]=useState<string|undefined>(undefined);
   const [bgUploadURL,setBgUploadURL]=useState<string|undefined>(undefined);
   const activeBgURL = bgUploadURL || bgTemplateURL;
