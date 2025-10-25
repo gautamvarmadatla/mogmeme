@@ -63,20 +63,60 @@ async function copyTextToClipboardSafe(text: string){ try{
 
 /* ---------------- Glitch Header ---------------- */
 
-function GlitchHeader(props: { onShare: () => void; onDownload: () => void }) {
+function GlitchHeader(props: {
+  onShare: () => void;
+  onDownload: () => void;
+  bgSrc?: string;             // e.g. "/headers/mog-loop.mp4" or "/headers/mog-bg.gif"
+  bgType?: "gif" | "video";   // default: "gif"
+}) {
+  const { bgSrc = "/headers/mog-bg.gif", bgType = "gif" } = props;
+
   return (
-    <header className="relative bg-neutral-950 border-b border-neutral-800 mb-6">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-10">
+    <header className="relative mb-6 overflow-hidden">
+      {/* Background media */}
+      {bgType === "video" ? (
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          src={bgSrc}
+          autoPlay
+          muted
+          loop
+          playsInline
+          // If the user prefers reduced motion, the video won't auto-play
+          // Tailwind's motion-safe: utility helps here
+          // (We still render a poster/frame if you set it on the video)
+        />
+      ) : (
+        <img
+          className="absolute inset-0 h-full w-full object-cover"
+          src={bgSrc}
+          alt=""
+          aria-hidden
+        />
+      )}
+
+      {/* Dark overlay for contrast */}
+      <div className="absolute inset-0 bg-black/60" />
+
+      {/* Optional subtle noise/scanlines on top (keeps the glitch vibe) */}
+      <div className="absolute inset-0 pointer-events-none opacity-20 [background:linear-gradient(#fff0_0,#fff0_30%,#fff1_30%,#fff1_31%,#fff0_31%),linear-gradient(90deg,#fff0_0,#fff0_30%,#fff1_30%,#fff1_31%,#fff0_31%)] bg-[size:20px_20px]" />
+
+      {/* Content */}
+      <div className="relative max-w-7xl mx-auto px-4 md:px-8 py-10 md:py-12">
         <div className="flex flex-col items-center gap-4">
           {/* Glitch title */}
           <h1 className="relative inline-block text-4xl md:text-6xl font-black tracking-[0.18em] uppercase text-center leading-tight">
-            <span className="text-neutral-50 select-none">MOTHER OF GOD ($MOG)</span>
-            <span className="absolute inset-0 translate-x-[2px] -translate-y-[2px] text-cyan-400 mix-blend-screen blur-[0.6px] pointer-events-none select-none">MOTHER OF GOD ($MOG)</span>
-            <span className="absolute inset-0 -translate-x-[2px] translate-y-[2px] text-fuchsia-400 mix-blend-screen blur-[0.6px] pointer-events-none select-none">MOTHER OF GOD ($MOG)</span>
+            <span className="text-neutral-50 select-none">MOTHER OF GOD</span>
+            <span className="absolute inset-0 translate-x-[2px] -translate-y-[2px] text-cyan-400 mix-blend-screen blur-[0.6px] pointer-events-none select-none">
+              MOTHER OF GOD
+            </span>
+            <span className="absolute inset-0 -translate-x-[2px] translate-y-[2px] text-fuchsia-400 mix-blend-screen blur-[0.6px] pointer-events-none select-none">
+              MOTHER OF GOD
+            </span>
           </h1>
 
-          {/* Custom subtitle */}
-          <p className="text-[11px] md:text-xs tracking-[0.32em] text-neutral-400 uppercase text-center">
+          {/* Subtitle */}
+          <p className="text-[11px] md:text-xs tracking-[0.32em] text-neutral-300 uppercase text-center">
             CA : 2BTgyeau8AFVL6bJvVksLLAaoVUyPLEo4osYNKQMjxVP
           </p>
 
@@ -85,7 +125,7 @@ function GlitchHeader(props: { onShare: () => void; onDownload: () => void }) {
             <button
               type="button"
               onClick={props.onShare}
-              className="px-4 py-2 rounded-2xl bg-neutral-800 hover:bg-neutral-700 border border-neutral-700"
+              className="px-4 py-2 rounded-2xl bg-neutral-800/80 hover:bg-neutral-800 border border-neutral-700 backdrop-blur-sm"
             >
               Share link
             </button>
@@ -102,6 +142,7 @@ function GlitchHeader(props: { onShare: () => void; onDownload: () => void }) {
     </header>
   );
 }
+
 
 /* ---------------- App ---------------- */
 
