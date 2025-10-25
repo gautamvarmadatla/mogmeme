@@ -70,9 +70,9 @@ function GlitchHeader(props: { onShare: () => void; onDownload: () => void }) {
         <div className="flex flex-col items-center gap-4">
           {/* Glitch title */}
           <h1 className="relative inline-block text-4xl md:text-6xl font-black tracking-[0.18em] uppercase text-center leading-tight">
-            <span className="text-neutral-50 select-none">MOTHER OF GOD</span>
-            <span className="absolute inset-0 translate-x-[2px] -translate-y-[2px] text-cyan-400 mix-blend-screen blur-[0.6px] pointer-events-none select-none">MOTHER OF GOD</span>
-            <span className="absolute inset-0 -translate-x-[2px] translate-y-[2px] text-fuchsia-400 mix-blend-screen blur-[0.6px] pointer-events-none select-none">MOTHER OF GOD</span>
+            <span className="text-neutral-50 select-none">MOTHER OF GOD ($MOG)</span>
+            <span className="absolute inset-0 translate-x-[2px] -translate-y-[2px] text-cyan-400 mix-blend-screen blur-[0.6px] pointer-events-none select-none">MOTHER OF GOD ($MOG)</span>
+            <span className="absolute inset-0 -translate-x-[2px] translate-y-[2px] text-fuchsia-400 mix-blend-screen blur-[0.6px] pointer-events-none select-none">MOTHER OF GOD ($MOG)</span>
           </h1>
 
           {/* Custom subtitle */}
@@ -117,7 +117,7 @@ export default function App(){
   const faceImg = useImage(`data:image/svg+xml;charset=utf-8,${MOG_FACE_SVG}`);
 
   const [layers,setLayers]=useState<Layer[]>([
-    { id: uid("text"), type:"text", name:"Top text", x:0.5, y:0.07, scale:1, opacity:1, text:"MOTHER OF GOD", fontSize:88, strokePx:12, letterSpacing:0, allCaps:true, rotation:0, visible:true },
+    { id: uid("text"), type:"text", name:"Top text", x:0.5, y:0.07, scale:1, opacity:1, text:"MOTHER OF GOD ($MOG)", fontSize:88, strokePx:12, letterSpacing:0, allCaps:true, rotation:0, visible:true },
     { id: uid("text"), type:"text", name:"Bottom text", x:0.5, y:0.93, scale:1, opacity:1, text:"...", fontSize:88, strokePx:12, letterSpacing:0, allCaps:true, rotation:0, visible:true },
     { id: uid("face"), type:"face", name:"Face", x:0.5, y:0.5, scale:0.8, opacity:1, rotation:0, visible:true },
   ]);
