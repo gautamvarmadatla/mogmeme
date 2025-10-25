@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Footer from "./components/Footer";
 
@@ -61,6 +60,50 @@ async function copyTextToClipboardSafe(text: string){ try{
   const ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly",""); ta.style.position="fixed"; ta.style.opacity="0";
   document.body.appendChild(ta); ta.select(); const ok = document.execCommand("copy"); document.body.removeChild(ta); return ok?{ok:true}:{ok:false};
 }catch(e:any){ return {ok:false, reason:String(e?.message||e)} } }
+
+/* ---------------- Glitch Header ---------------- */
+
+function GlitchHeader(props: { onShare: () => void; onDownload: () => void }) {
+  return (
+    <header className="relative bg-neutral-950 border-b border-neutral-800 mb-6">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-10">
+        <div className="flex flex-col items-center gap-4">
+          {/* Glitch title */}
+          <h1 className="relative inline-block text-4xl md:text-6xl font-black tracking-[0.18em] uppercase text-center leading-tight">
+            <span className="text-neutral-50 select-none">MOTHER OF GOD</span>
+            <span className="absolute inset-0 translate-x-[2px] -translate-y-[2px] text-cyan-400 mix-blend-screen blur-[0.6px] pointer-events-none select-none">MOTHER OF GOD</span>
+            <span className="absolute inset-0 -translate-x-[2px] translate-y-[2px] text-fuchsia-400 mix-blend-screen blur-[0.6px] pointer-events-none select-none">MOTHER OF GOD</span>
+          </h1>
+
+          {/* Custom subtitle */}
+          <p className="text-[11px] md:text-xs tracking-[0.32em] text-neutral-400 uppercase text-center">
+            CA : 2BTgyeau8AFVL6bJvVksLLAaoVUyPLEo4osYNKQMjxVP
+          </p>
+
+          {/* Controls */}
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={props.onShare}
+              className="px-4 py-2 rounded-2xl bg-neutral-800 hover:bg-neutral-700 border border-neutral-700"
+            >
+              Share link
+            </button>
+            <button
+              type="button"
+              onClick={props.onDownload}
+              className="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 font-semibold"
+            >
+              Download PNG
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/* ---------------- App ---------------- */
 
 export default function App(){
   const canvasRef = useRef<HTMLCanvasElement|null>(null);
@@ -198,166 +241,179 @@ export default function App(){
 
   const toShareURL=()=>{ const state={width,height,template,bgTemplateURL,bgUploadURL,layers}; const b64=btoa(unescape(encodeURIComponent(JSON.stringify(state)))); return `${location.origin}${location.pathname}#s=${b64}`; };
   const onShare=async()=>{ const url=toShareURL(); const {ok}=await copyTextToClipboardSafe(url); setToast(ok? "Sharable link copied" : url); };
+  const onDownload=()=>{ const c=canvasRef.current; if(!c) return; c.toBlob(b=>b&&downloadBlob(b,`mother-of-god-${Date.now()}.png`)); };
 
-  return (<div className="min-h-screen bg-neutral-950 text-neutral-100">
-    <div className="max-w-7xl mx-auto p-4 md:p-8">
-      <header className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Mother of God Meme Maker</h1>
-        <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={onShare} className="px-4 py-2 rounded-2xl bg-neutral-700 hover:bg-neutral-600">Share link</button>
-          <button type="button" onClick={()=>{ const c=canvasRef.current; if(!c) return; c.toBlob(b=>b&&downloadBlob(b,`mother-of-god-${Date.now()}.png`)); }} className="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 font-semibold">Download PNG</button>
-        </div>
-      </header>
+  return (
+    <div className="min-h-screen bg-neutral-950 text-neutral-100">
+      {/* Glitch Header */}
+      <GlitchHeader onShare={onShare} onDownload={onDownload} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <aside className="lg:col-span-2 space-y-6">
-          <section className="bg-neutral-900 rounded-2xl p-4 border border-neutral-800">
-            <h2 className="font-semibold mb-3">Canvas</h2>
-            <div className="grid grid-cols-2 gap-3">
-              <label className="text-sm opacity-80">Width
-                <input type="number" value={width} onChange={e=>setWidth(Math.max(256, Number(e.target.value)||0))} className="w-full mt-1 bg-neutral-800 rounded-xl p-2"/>
-              </label>
-              <label className="text-sm opacity-80">Height
-                <input type="number" value={height} onChange={e=>setHeight(Math.max(256, Number(e.target.value)||0))} className="w-full mt-1 bg-neutral-800 rounded-xl p-2"/>
-              </label>
-            </div>
-            <div className="flex flex-wrap gap-2 mt-3">
-              {[
-                {label:"1:1", w:1024, h:1024},
-                {label:"16:9", w:1600, h:900},
-                {label:"9:16", w:1080, h:1920},
-                {label:"3:1", w:1800, h:600},
-              ].map(p=>(<button key={p.label} type="button" onClick={()=>{setWidth(p.w); setHeight(p.h);}} className="text-xs px-3 py-1 rounded-2xl border border-neutral-700 hover:bg-neutral-800">{p.label}</button>))}
-            </div>
-          </section>
-
-          <section className="bg-neutral-900 rounded-2xl p-4 border border-neutral-800 space-y-3">
-            <h2 className="font-semibold">Background</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {templatesList.map(t=>(
-                <button key={t.name} type="button" onClick={()=>setBgTemplateURL(t.url)} className={`relative rounded-xl overflow-hidden border ${bgTemplateURL===t.url?'border-emerald-600':'border-neutral-800'} hover:border-neutral-600`}>
-                  <div className="aspect-video bg-neutral-800" style={{backgroundImage:`url(${t.url})`, backgroundSize:'cover', backgroundPosition:'center'}}/>
-                  <div className="absolute bottom-0 left-0 right-0 text-xs bg-black/50 px-2 py-1">{t.name}</div>
-                </button>
-              ))}
-            </div>
-            <div className="mt-3 space-y-2">
-              <label className="block text-sm opacity-80">Upload background
-                <input type="file" accept="image/*" onChange={e=>setBgUploadURL(e.target.files?.[0]? URL.createObjectURL(e.target.files![0]) : undefined)} className="w-full text-sm"/>
-              </label>
-              <div className="flex gap-2 text-xs">
-                <button type="button" onClick={()=>setBgUploadURL(undefined)} className="px-2 py-1 rounded-xl bg-neutral-800">Clear upload</button>
-                <button type="button" onClick={()=>setBgTemplateURL(undefined)} className="px-2 py-1 rounded-xl bg-neutral-800">Clear template</button>
-              </div>
-              <div className="text-xs opacity-60">Active background: {bgUploadURL ? 'upload' : (bgTemplateURL ? 'template' : 'none')}</div>
-            </div>
-          </section>
-
-          <section className="bg-neutral-900 rounded-2xl p-4 border border-neutral-800 space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold">Stickers & Text</h2>
-              <div className="flex gap-2 text-xs">
-                <button type="button" onClick={addTextLayer} className="px-2 py-1 rounded-xl bg-neutral-800">Add text</button>
-                <label className="px-2 py-1 rounded-xl bg-neutral-800 cursor-pointer">Add image
-                  <input type="file" accept="image/*" className="hidden" onChange={e=>{ const f=e.target.files?.[0]; if(f) addImageSticker(f); }}/>
+      <div className="max-w-7xl mx-auto p-4 md:p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+          <aside className="lg:col-span-2 space-y-6">
+            <section className="bg-neutral-900 rounded-2xl p-4 border border-neutral-800">
+              <h2 className="font-semibold mb-3">Canvas</h2>
+              <div className="grid grid-cols-2 gap-3">
+                <label className="text-sm opacity-80">Width
+                  <input type="number" value={width} onChange={e=>setWidth(Math.max(256, Number(e.target.value)||0))} className="w-full mt-1 bg-neutral-800 rounded-xl p-2"/>
                 </label>
-                <button type="button" onClick={clearStickers} className="px-2 py-1 rounded-xl bg-neutral-800 hover:bg-neutral-700">Clear stickers</button>
+                <label className="text-sm opacity-80">Height
+                  <input type="number" value={height} onChange={e=>setHeight(Math.max(256, Number(e.target.value)||0))} className="w-full mt-1 bg-neutral-800 rounded-xl p-2"/>
+                </label>
               </div>
-            </div>
-
-            {predefinedImages.length > 0 && (
-              <div className="mt-2">
-                <h3 className="text-sm font-medium mb-2">
-                  Predefined images <span className="opacity-60">({predefinedImages.length})</span>
-                </h3>
-                <div className="max-h-72 md:max-h-96 overflow-y-auto pr-1">
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                    {predefinedImages.map(p => (
-                      <button key={p.url} type="button" onClick={()=>addImageStickerFromURL(p.url, p.name)}
-                        className="rounded-xl overflow-hidden border border-neutral-800 hover:border-neutral-600" title={p.name}>
-                        <div className="aspect-square bg-neutral-800" style={{backgroundImage:`url(${p.url})`, backgroundSize:'contain', backgroundPosition:'center', backgroundRepeat:'no-repeat'}} />
-                        <div className="text-xs px-2 py-1 truncate">{p.name}</div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+              <div className="flex flex-wrap gap-2 mt-3">
+                {[
+                  {label:"1:1", w:1024, h:1024},
+                  {label:"16:9", w:1600, h:900},
+                  {label:"9:16", w:1080, h:1920},
+                  {label:"3:1", w:1800, h:600},
+                ].map(p=>(
+                  <button key={p.label} type="button" onClick={()=>{setWidth(p.w); setHeight(p.h);}} className="text-xs px-3 py-1 rounded-2xl border border-neutral-700 hover:bg-neutral-800">{p.label}</button>
+                ))}
               </div>
-            )}
+            </section>
 
-            <ul className="space-y-2 mt-3">
-              {layers.map(l=>(
-                <li key={l.id} className={`flex items-center justify-between gap-2 p-2 rounded-xl border ${selectedId===l.id?'border-emerald-600 bg-neutral-800':'border-neutral-800 bg-neutral-900'}`}>
-                  <button type="button" className="text-left flex-1" onClick={()=>setSelectedId(l.id)}>
-                    <div className="text-sm font-medium">{l.name}</div>
-                    <div className="text-xs opacity-70">{l.type} · x{l.x.toFixed(2)} y{l.y.toFixed(2)} · scale {(l.scale??1).toFixed(2)}</div>
+            <section className="bg-neutral-900 rounded-2xl p-4 border border-neutral-800 space-y-3">
+              <h2 className="font-semibold">Background</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {templatesList.map(t=>(
+                  <button key={t.name} type="button" onClick={()=>setBgTemplateURL(t.url)} className={`relative rounded-xl overflow-hidden border ${bgTemplateURL===t.url?'border-emerald-600':'border-neutral-800'} hover:border-neutral-600`}>
+                    <div className="aspect-video bg-neutral-800" style={{backgroundImage:`url(${t.url})`, backgroundSize:'cover', backgroundPosition:'center'}}/>
+                    <div className="absolute bottom-0 left-0 right-0 text-xs bg-black/50 px-2 py-1">{t.name}</div>
                   </button>
-                  <div className="flex items-center gap-1">
-                    <button type="button" title={l.visible===false? 'Show' : 'Hide'} onClick={()=>setLayers(prev=>prev.map(x=>x.id===l.id? {...x, visible: x.visible===false? true:false} : x))} className="text-xs px-2 py-1 rounded-lg bg-neutral-800">{l.visible===false? '👁️‍🗨️' : '👁️'}</button>
-                    <button type="button" title="Delete" onClick={()=>setLayers(prev=>prev.filter(x=>x.id!==l.id))} className="text-xs px-2 py-1 rounded-lg bg-red-600">✕</button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-
-            {selected && (
-              <div className="mt-3 space-y-3">
-                <h3 className="font-medium">Selected Layer</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  <label className="text-sm opacity-80">X
-                    <input type="range" min={0} max={1} step={0.001} value={selected.x} onChange={e=>setSelectedProp('x' as any, Number(e.target.value))} className="w-full"/>
-                  </label>
-                  <label className="text-sm opacity-80">Y
-                    <input type="range" min={0} max={1} step={0.001} value={selected.y} onChange={e=>setSelectedProp('y' as any, Number(e.target.value))} className="w-full"/>
-                  </label>
-                  <label className="text-sm opacity-80">Scale
-                    <input type="range" min={0.2} max={2} step={0.01} value={selected.scale} onChange={e=>setSelectedProp('scale' as any, Number(e.target.value))} className="w-full"/>
-                  </label>
-                  <label className="text-sm opacity-80">Opacity
-                    <input type="range" min={0.2} max={1} step={0.01} value={selected.opacity} onChange={e=>setSelectedProp('opacity' as any, Number(e.target.value))} className="w-full"/>
-                  </label>
+                ))}
+              </div>
+              <div className="mt-3 space-y-2">
+                <label className="block text-sm opacity-80">Upload background
+                  <input type="file" accept="image/*" onChange={e=>setBgUploadURL(e.target.files?.[0]? URL.createObjectURL(e.target.files![0]) : undefined)} className="w-full text-sm"/>
+                </label>
+                <div className="flex gap-2 text-xs">
+                  <button type="button" onClick={()=>setBgUploadURL(undefined)} className="px-2 py-1 rounded-xl bg-neutral-800">Clear upload</button>
+                  <button type="button" onClick={()=>setBgTemplateURL(undefined)} className="px-2 py-1 rounded-xl bg-neutral-800">Clear template</button>
                 </div>
-                {selected.type==="text" && (
-                  <div className="space-y-3">
-                    <label className="text-sm opacity-80">Text
-                      <input value={(selected as TextLayer).text} onChange={e=>setSelectedProp('text' as any, e.target.value)} className="w-full mt-1 bg-neutral-800 rounded-xl p-2"/>
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <label className="text-sm opacity-80">Font size
-                        <input type="range" min={24} max={200} step={1} value={(selected as TextLayer).fontSize} onChange={e=>setSelectedProp('fontSize' as any, Number(e.target.value))} className="w-full"/>
-                      </label>
-                      <label className="text-sm opacity-80">Stroke
-                        <input type="range" min={2} max={32} step={1} value={(selected as TextLayer).strokePx} onChange={e=>setSelectedProp('strokePx' as any, Number(e.target.value))} className="w-full"/>
-                      </label>
-                      <label className="text-sm opacity-80">Letter spacing
-                        <input type="range" min={-2} max={30} step={0.5} value={(selected as TextLayer).letterSpacing} onChange={e=>setSelectedProp('letterSpacing' as any, Number(e.target.value))} className="w-full"/>
-                      </label>
-                      <label className="text-sm opacity-80 flex items-center gap-2">All caps
-                        <input type="checkbox" checked={(selected as TextLayer).allCaps} onChange={e=>setSelectedProp('allCaps' as any, e.target.checked)}/>
-                      </label>
+                <div className="text-xs opacity-60">Active background: {bgUploadURL ? 'upload' : (bgTemplateURL ? 'template' : 'none')}</div>
+              </div>
+            </section>
+
+            <section className="bg-neutral-900 rounded-2xl p-4 border border-neutral-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="font-semibold">Stickers & Text</h2>
+                <div className="flex gap-2 text-xs">
+                  <button type="button" onClick={addTextLayer} className="px-2 py-1 rounded-xl bg-neutral-800">Add text</button>
+                  <label className="px-2 py-1 rounded-xl bg-neutral-800 cursor-pointer">Add image
+                    <input type="file" accept="image/*" className="hidden" onChange={e=>{ const f=e.target.files?.[0]; if(f) addImageSticker(f); }}/>
+                  </label>
+                  <button type="button" onClick={clearStickers} className="px-2 py-1 rounded-xl bg-neutral-800 hover:bg-neutral-700">Clear stickers</button>
+                </div>
+              </div>
+
+              {/* Predefined images gallery */}
+              {predefinedImages.length > 0 && (
+                <div className="mt-2">
+                  <h3 className="text-sm font-medium mb-2">
+                    Predefined images <span className="opacity-60">({predefinedImages.length})</span>
+                  </h3>
+                  <div className="max-h-72 md:max-h-96 overflow-y-auto pr-1">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                      {predefinedImages.map(p => (
+                        <button key={p.url} type="button" onClick={()=>addImageStickerFromURL(p.url, p.name)}
+                          className="rounded-xl overflow-hidden border border-neutral-800 hover:border-neutral-600" title={p.name}>
+                          <div className="aspect-square bg-neutral-800" style={{backgroundImage:`url(${p.url})`, backgroundSize:'contain', backgroundPosition:'center', backgroundRepeat:'no-repeat'}} />
+                          <div className="text-xs px-2 py-1 truncate">{p.name}</div>
+                        </button>
+                      ))}
                     </div>
                   </div>
-                )}
-                {selected.type==="image" && (
-                  <div className="space-y-2">
-                    <label className="text-sm opacity-80">Replace image
-                      <input type="file" accept="image/*" onChange={e=>replaceSelectedImage(e.target.files?.[0]||undefined)} className="w-full mt-1 text-sm"/>
+                </div>
+              )}
+
+              <ul className="space-y-2 mt-3">
+                {layers.map(l=>(
+                  <li key={l.id} className={`flex items-center justify-between gap-2 p-2 rounded-xl border ${selectedId===l.id?'border-emerald-600 bg-neutral-800':'border-neutral-800 bg-neutral-900'}`}>
+                    <button type="button" className="text-left flex-1" onClick={()=>setSelectedId(l.id)}>
+                      <div className="text-sm font-medium">{l.name}</div>
+                      <div className="text-xs opacity-70">{l.type} · x{l.x.toFixed(2)} y{l.y.toFixed(2)} · scale {(l.scale??1).toFixed(2)}</div>
+                    </button>
+                    <div className="flex items-center gap-1">
+                      <button type="button" title={l.visible===false? 'Show' : 'Hide'} onClick={()=>setLayers(prev=>prev.map(x=>x.id===l.id? {...x, visible: x.visible===false? true:false} : x))} className="text-xs px-2 py-1 rounded-lg bg-neutral-800">{l.visible===false? '👁️‍🗨️' : '👁️'}</button>
+                      <button type="button" title="Delete" onClick={()=>setLayers(prev=>prev.filter(x=>x.id!==l.id))} className="text-xs px-2 py-1 rounded-lg bg-red-600">✕</button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+
+              {selected && (
+                <div className="mt-3 space-y-3">
+                  <h3 className="font-medium">Selected Layer</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <label className="text-sm opacity-80">X
+                      <input type="range" min={0} max={1} step={0.001} value={selected.x} onChange={e=>setSelectedProp('x' as any, Number(e.target.value))} className="w-full"/>
+                    </label>
+                    <label className="text-sm opacity-80">Y
+                      <input type="range" min={0} max={1} step={0.001} value={selected.y} onChange={e=>setSelectedProp('y' as any, Number(e.target.value))} className="w-full"/>
+                    </label>
+                    <label className="text-sm opacity-80">Scale
+                      <input type="range" min={0.2} max={2} step={0.01} value={selected.scale} onChange={e=>setSelectedProp('scale' as any, Number(e.target.value))} className="w-full"/>
+                    </label>
+                    <label className="text-sm opacity-80">Opacity
+                      <input type="range" min={0.2} max={1} step={0.01} value={selected.opacity} onChange={e=>setSelectedProp('opacity' as any, Number(e.target.value))} className="w-full"/>
                     </label>
                   </div>
-                )}
-              </div>
-            )}
-          </section>
-        </aside>
+                  {selected.type==="text" && (
+                    <div className="space-y-3">
+                      <label className="text-sm opacity-80">Text
+                        <input value={(selected as TextLayer).text} onChange={e=>setSelectedProp('text' as any, e.target.value)} className="w-full mt-1 bg-neutral-800 rounded-xl p-2"/>
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <label className="text-sm opacity-80">Font size
+                          <input type="range" min={24} max={200} step={1} value={(selected as TextLayer).fontSize} onChange={e=>setSelectedProp('fontSize' as any, Number(e.target.value))} className="w-full"/>
+                        </label>
+                        <label className="text-sm opacity-80">Stroke
+                          <input type="range" min={2} max={32} step={1} value={(selected as TextLayer).strokePx} onChange={e=>setSelectedProp('strokePx' as any, Number(e.target.value))} className="w-full"/>
+                        </label>
+                        <label className="text-sm opacity-80">Letter spacing
+                          <input type="range" min={-2} max={30} step={0.5} value={(selected as TextLayer).letterSpacing} onChange={e=>setSelectedProp('letterSpacing' as any, Number(e.target.value))} className="w-full"/>
+                        </label>
+                        <label className="text-sm opacity-80 flex items-center gap-2">All caps
+                          <input type="checkbox" checked={(selected as TextLayer).allCaps} onChange={e=>setSelectedProp('allCaps' as any, e.target.checked)}/>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                  {selected.type==="image" && (
+                    <div className="space-y-2">
+                      <label className="text-sm opacity-80">Replace image
+                        <input type="file" accept="image/*" onChange={e=>replaceSelectedImage(e.target.files?.[0]||undefined)} className="w-full mt-1 text-sm"/>
+                      </label>
+                    </div>
+                  )}
+                </div>
+              )}
+            </section>
+          </aside>
 
-        <main className="lg:col-span-3 bg-neutral-900 rounded-2xl p-4 border border-neutral-800 flex flex-col gap-3 items-center justify-center">
-          <canvas ref={canvasRef} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} className="max-w-full h-auto rounded-xl shadow-2xl touch-none"/>
-          <div className="text-xs opacity-70">Tip: drag layers on the canvas. Upload background overrides template; use Clear buttons to switch.</div>
-        </main>
+          <main className="lg:col-span-3 bg-neutral-900 rounded-2xl p-4 border border-neutral-800 flex flex-col gap-3 items-center justify-center">
+            <canvas
+              ref={canvasRef}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={onPointerUp}
+              className="max-w-full h-auto rounded-xl shadow-2xl touch-none"
+            />
+            <div className="text-xs opacity-70">
+              Tip: drag layers on the canvas. Upload background overrides template; use Clear buttons to switch.
+            </div>
+          </main>
+        </div>
+
+        <Footer />
+
+        {toast && (
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-neutral-800 text-xs px-3 py-2 rounded-xl border border-neutral-700 shadow-lg" role="status">
+            {toast}
+          </div>
+        )}
       </div>
-
-      <Footer />
-
-      {toast && (<div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-neutral-800 text-xs px-3 py-2 rounded-xl border border-neutral-700 shadow-lg" role="status">{toast}</div>)}
     </div>
-  </div>);
+  );
 }
