@@ -11,63 +11,61 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-neutral-950 text-neutral-200 border-t border-neutral-800 mt-16">
-      <div className="max-w-6xl mx-auto px-4 py-8 md:py-10">
+    <footer className="bg-neutral-950 text-neutral-200 border-t border-neutral-800 mt-12">
+      <div className="max-w-6xl mx-auto px-4 py-6">
         {/* Heading */}
-        <div className="text-center text-xs font-bold tracking-[0.35em] text-neutral-300 mb-4">
+        <div className="text-center text-xs font-bold tracking-[0.35em] text-neutral-300 mb-3">
           MOGGED BY
         </div>
 
-        {/* Row: compact tag card + socials */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
-          {/* Compact gamer tag card (shorter width) */}
-          <div className="md:col-span-2">
-            <div className="max-w-[560px] mx-auto flex items-center gap-3 rounded border border-neutral-700 bg-neutral-900/60">
+        {/* One row, tight gap, perfectly aligned heights */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          {/* Tag card (fixed max width so it doesn't over-expand) */}
+          <div className="w-full md:max-w-[560px]">
+            <div className="h-12 flex items-center rounded border border-neutral-700 bg-neutral-900/60">
+              {/* Logo box exactly 48x48 (h-12 w-12) */}
               <div className="h-12 w-12 shrink-0 rounded-l overflow-hidden bg-gradient-to-br from-red-600 to-blue-600">
-                {/* Fit image to box */}
                 <img
                   src="/mog-logo.jpg"
                   alt="Avatar"
                   className="h-full w-full object-cover"
                 />
               </div>
-
-              <div className="flex-1 py-2 pr-3">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="font-semibold text-sm md:text-base tracking-wide">
-                    [MOG]Mother of God
-                  </div>
-                  {/* Stars removed */}
+              {/* Text area with very compact padding */}
+              <div className="flex-1 h-full flex items-center px-3">
+                <div className="font-semibold text-sm md:text-base tracking-wide truncate">
+                  [MOG]Mother of God
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Social buttons */}
-          <div className="rounded border border-neutral-700 bg-neutral-900/60 px-2 py-2">
-            <div className="flex items-center justify-center gap-2">
-              {socials.map((s) => (
-                <a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={s.label}
-                  className="inline-flex items-center justify-center h-10 w-10 rounded bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 transition"
-                >
-                  <div className="h-5 w-5">{s.icon}</div>
-                </a>
-              ))}
+          {/* Social bar: same height and radius; icons centered */}
+          <div className="w-full md:w-auto">
+            <div className="h-12 flex items-center rounded border border-neutral-700 bg-neutral-900/60 px-2">
+              <div className="flex items-center gap-2 mx-auto md:mx-0">
+                {socials.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={s.label}
+                    className="inline-flex items-center justify-center h-9 w-9 rounded bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 transition"
+                    title={s.label}
+                  >
+                    <div className="h-5 w-5">{s.icon}</div>
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Disclaimer */}
-        <p className="mt-6 text-center text-[10px] md:text-[11px] leading-relaxed tracking-[0.15em] text-neutral-400 uppercase">
-          $MOG IS A CRYPTO ASSET WITH NO INTRINSIC VALUE OR EXPECTATION OF
-          FINANCIAL RETURN. MOG COINS ARE TO BE USED FOR ENTERTAINMENT PURPOSES
-          ONLY. THIS WEBSITE IS ENTIRELY FAN MADE AND IS ONLY TO BE USED FOR
-          MEME GENERATION.
+        {/* Disclaimer (tightened spacing) */}
+        <p className="mt-4 text-center text-[10px] md:text-[11px] leading-relaxed tracking-[0.15em] text-neutral-400 uppercase">
+          $MOG IS A CRYPTO ASSET WITH NO INTRINSIC VALUE OR EXPECTATION OF FINANCIAL RETURN. MOG COINS ARE TO BE USED
+          FOR ENTERTAINMENT PURPOSES ONLY. THIS WEBSITE IS ENTIRELY FAN MADE AND IS ONLY TO BE USED FOR MEME GENERATION.
         </p>
       </div>
     </footer>
